@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+{% block body %}
+
+<div class="container py-4 mx-auto" style="margin-top: 5rem;">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card card-body" style="background-color: blanchedalmond; text-align: center;">
+                <h3 style="color: black;">{{ precaution }}</h3>
+            </div>
+        </div>
+    </div>
+
+    {% if prediction == "Stroke" %}
+    <div class="row mt-4">
+        <div class="col-md-6 mx-auto">
+            <div class="card card-body" style="background-color: white;">
+                <h4 style="color: black; text-align: center;">Treatment Information</h4>
+                <ul style="list-style-type: none; padding: 0;">
+                    <li><strong>Treatment:</strong> {{ details.treatment }}</li>
+                    <li><strong>Cure:</strong> {{ details.cure }}</li>
+                    <li><strong>Medication:</strong> {{ details.medication }}</li>
+                    <li><strong>Ayurvedic Options:</strong> {{ details.ayurvedic }}</li>
+                    <li><strong>Recommended Hospital:</strong> {{ details.hospital }}</li>
+                    <li><strong>Suggested Doctor:</strong> {{ details.doctor }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="row mt-4">
+        <div class="col-md-6 mx-auto">
+            <div class="card card-body" style="background-color: white;">
+                <h4 style="color: green; text-align: center;">Great News!</h4>
+                <p style="text-align: center; color: black;">No signs of stroke detected. Keep maintaining a healthy lifestyle!</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

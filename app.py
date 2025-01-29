@@ -9,7 +9,8 @@ import config
 import pickle
 import io
 from PIL import Image
-
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 
 # ==============================================================================================
 
@@ -17,29 +18,7 @@ from PIL import Image
 
 # Loading plant disease classification model
 
-disease_dic= ['Apple___Apple_scab',
- 'Apple___Black_rot',
- 'Apple___Cedar_apple_rust',
- 'Apple___healthy',
- 'Corn___Cercospora_leaf_spot Gray_leaf_spot',
- 'Corn___Common_rust',
- 'Corn___Northern_Leaf_Blight',
- 'Corn___healthy',
- 'Grape___Black_rot',
- 'Grape___Esca_(Black_Measles)',
- 'Grape___healthy',
- 'Strawberry___Leaf_scorch',
- 'Strawberry___healthy',
- 'Tomato___Bacterial_spot',
- 'Tomato___Early_blight',
- 'Tomato___Late_blight',
- 'Tomato___Leaf_Mold',
- 'Tomato___Septoria_leaf_spot',
- 'Tomato___Spider_mites Two-spotted_spider_mite',
- 'Tomato___Target_Spot',
- 'Tomato___Tomato_Yellow_Leaf_Curl_Virus',
- 'Tomato___Tomato_mosaic_virus',
- 'Tomato___healthy']
+disease_dic= ["No Stroke","Stroke"]
 
 
 
@@ -56,37 +35,52 @@ app = Flask(__name__)
 
 @ app.route('/')
 def home():
-    title = 'Harvestify - Home'
+    title = 'Brain Stroke Detection'
     return render_template('index.html', title=title)
 
 # render crop recommendation form page
 
 @app.route('/disease-predict', methods=['GET', 'POST'])
 def disease_prediction():
-    title = 'Harvestify - Disease Detection'
+    title = 'Brain Stroke Detection'
 
     if request.method == 'POST':
-        #if 'file' not in request.files:
-         #   return redirect(request.url)
-            file = request.files.get('file')
+        file = request.files.get('file')
 
-            print(file)
-        #if not file:
-         #   return render_template('disease.html', title=title)
-        #try:
-            img1 = file.read()
+        if not file:
+            return render_template('rust.html', title=title)
 
-            #print(img)
+        # Process the uploaded file
+        img = Image.open(file)
+        img.save('output.png')
 
-            prediction =pred_leaf_disease(img1)
+        # Make the prediction
+        prediction = pred_leaf_disease("output.png")
+        prediction = str(disease_dic[prediction])
 
-            prediction = (str(disease_dic[prediction]))
+        print("Prediction result:", prediction)
 
-            print(prediction)
-            return render_template('disease-result.html', prediction=prediction, title=title)
-        #except:
-         #   pass
-    return render_template('disease.html', title=title)
+        # Define response based on prediction
+        if prediction == "Stroke":
+            precaution = "Stroke detected! Immediate action is required."
+            details = {
+                "treatment": "Seek emergency medical attention.",
+                "cure": "Timely medical intervention and rehabilitation can improve outcomes.",
+                "medication": "Common treatments include anticoagulants, thrombolytics, and blood pressure management.",
+                "ayurvedic": "Consider herbs like Ashwagandha and Brahmi under a doctor's guidance.",
+                "hospital": "Nearby hospital: City General Hospital, Emergency Unit.",
+                "doctor": "Recommended Specialist: Dr. Jane Doe, Neurologist."
+            }
+        else:
+            precaution = "Congratulations! No signs of stroke detected."
+            details = {}
+
+        # Render the result page with prediction and details
+        return render_template('rust-result.html', prediction=prediction, precaution=precaution, details=details, title=title)
+
+    # Default page rendering
+    return render_template('rust.html', title=title)
+
 
 
 # render disease prediction result page

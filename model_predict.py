@@ -6,25 +6,17 @@ from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.imagenet_utils import decode_predictions
 from tensorflow.keras.applications.imagenet_utils import preprocess_input
 from tensorflow.keras.models import load_model
-loaded_model_imageNet = load_model("model_resnet50.h5")
+loaded_model_imageNet = load_model("Brain_stroke_detection.h5")
 from tensorflow.keras.applications.resnet50 import preprocess_input, decode_predictions
 import io
 from PIL import Image
+import cv2
 def pred_leaf_disease(image_path):				 
-				# Opens a image in RGB mode
-			#	transform = transforms.Compose([
-				#transforms.Resize(256),
-				#transforms.ToTensor(),
-			#	])
-				image = Image.open(io.BytesIO(image_path))
 
 
-				newsize = (100,100)
-				img = image.resize(newsize)
-
-
-
-				x = np.expand_dims(img, axis=0)
+				img = image.load_img(image_path, target_size=(100,100))
+				x = image.img_to_array(img)
+				x = np.expand_dims(x, axis=0)
 				x = preprocess_input(x)
 				result = loaded_model_imageNet.predict(x)
 				print((result*100).astype('int'))
