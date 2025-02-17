@@ -1,0 +1,59 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="card mx-auto" style="max-width: 600px;">
+        <div class="card-header bg-primary text-white">
+            <h3>Patient Details Form</h3>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.name.label }}
+                    {{ form.name(class="form-control") }}
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        {{ form.age.label }}
+                        {{ form.age(class="form-control") }}
+                    </div>
+                    <div class="col-md-6 form-group">
+                        {{ form.gender.label }}
+                        <!-- Custom animated dropdown for gender -->
+                        <select name="{{ form.gender.name }}" id="{{ form.gender.id }}" class="form-control animated fadeIn">
+                            <option value="Male" {% if form.gender.data == 'Male' %}selected{% endif %}>Male</option>
+                            <option value="Female" {% if form.gender.data == 'Female' %}selected{% endif %}>Female</option>
+                            <option value="Other" {% if form.gender.data == 'Other' %}selected{% endif %}>Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form.contact.label }}
+                    {{ form.contact(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.address.label }}
+                    {{ form.address(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.medical_history.label }}
+                    {{ form.medical_history(class="form-control", rows=3) }}
+                </div>
+                {{ form.submit(class="btn btn-primary btn-block") }}
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery script to add an animated effect on focus for the gender dropdown -->
+<script>
+    $(document).ready(function(){
+        $('#{{ form.gender.id }}').on('focus', function(){
+            $(this).addClass('animated pulse');
+        }).on('blur', function(){
+            $(this).removeClass('animated pulse');
+        });
+    });
+</script>
+{% endblock %}

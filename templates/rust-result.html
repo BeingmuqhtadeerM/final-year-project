@@ -2,36 +2,111 @@
 {% block body %}
 
 <div class="container py-4 mx-auto" style="margin-top: 5rem;">
+    <!-- Prediction Result Header -->
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            {% if prediction == "Stroke" %}
+                <h2 class="text-danger"><i class="fas fa-exclamation-triangle"></i> STROKE DETECTED</h2>
+            {% else %}
+                <h2 class="text-success"><i class="fas fa-check-circle"></i> NO STROKE DETECTED</h2>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Confidence Display -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <h4>Model Confidence: {{ confidence }}%</h4>
+                <small>This indicates the AI model's confidence level in this diagnosis</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Precaution Alert -->
     <div class="row">
         <div class="col-sm-12">
-            <div class="card card-body" style="background-color: blanchedalmond; text-align: center;">
-                <h3 style="color: black;">{{ precaution }}</h3>
+            <div class="alert alert-{% if prediction == 'Stroke' %}danger{% else %}success{% endif %} text-center">
+                <h4>{{ precaution }}</h4>
             </div>
         </div>
     </div>
 
     {% if prediction == "Stroke" %}
     <div class="row mt-4">
-        <div class="col-md-6 mx-auto">
-            <div class="card card-body" style="background-color: white;">
-                <h4 style="color: black; text-align: center;">Treatment Information</h4>
-                <ul style="list-style-type: none; padding: 0;">
-                    <li><strong>Treatment:</strong> {{ details.treatment }}</li>
-                    <li><strong>Cure:</strong> {{ details.cure }}</li>
-                    <li><strong>Medication:</strong> {{ details.medication }}</li>
-                    <li><strong>Ayurvedic Options:</strong> {{ details.ayurvedic }}</li>
-                    <li><strong>Recommended Hospital:</strong> {{ details.hospital }}</li>
-                    <li><strong>Suggested Doctor:</strong> {{ details.doctor }}</li>
-                </ul>
+        <!-- Treatment Information Column -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Treatment Information</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <strong>Treatment:</strong> {{ details.Treatment }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Cure:</strong> {{ details.Cure }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Medication:</strong> {{ details.Medication }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Ayurvedic Options:</strong> {{ details.Ayurvedic_Options }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Recommended Hospital:</strong> {{ details.Recommended_Hospital }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Suggested Doctor:</strong> {{ details.Suggested_Doctor }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Model Confidence:</strong> {{ details.Model_Confidence }}
+                        </li>
+                    </ul>
+                    
+                    <!-- PDF Download Button -->
+                    <div class="mt-4 text-center">
+                        <a href="{{ url_for('download_report', filename=report_filename) }}" 
+                           class="btn btn-danger btn-lg">
+                            <i class="fa fa-download"></i> Download Full Report
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Uploaded Image Column -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">Medical Scan Preview</h4>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ url_for('static', filename='output.png') }}" 
+                         class="img-fluid rounded" 
+                         alt="Scan Preview"
+                         style="max-height: 400px;">
+                </div>
             </div>
         </div>
     </div>
+
     {% else %}
+    <!-- No Stroke Detected Section -->
     <div class="row mt-4">
-        <div class="col-md-6 mx-auto">
-            <div class="card card-body" style="background-color: white;">
-                <h4 style="color: green; text-align: center;">Great News!</h4>
-                <p style="text-align: center; color: black;">No signs of stroke detected. Keep maintaining a healthy lifestyle!</p>
+        <div class="col-md-8 mx-auto">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Healthy Scan Report</h4>
+                </div>
+                <div class="card-body text-center">
+                    <i class="fas fa-heartbeat fa-4x text-success mb-3"></i>
+                    <h5 class="card-title">No signs of stroke detected</h5>
+                    <p class="card-text">
+                        Maintain regular checkups and a healthy lifestyle
+                    </p>
+                </div>
             </div>
         </div>
     </div>
