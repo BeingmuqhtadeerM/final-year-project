@@ -1,4 +1,3 @@
-# final-year-project
 # Stroke Identification Using Deep Learning
 
 ## Overview
